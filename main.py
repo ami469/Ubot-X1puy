@@ -51,8 +51,8 @@ async def userbot_callback(client, query):
 # BOT TOKEN HANDLERS
 @bot.on_message(filters.command("start"))
 async def bot_start(client, message):
-    await message.reply("👋 Selamat datang!") 
-Gunakan /help untuk melihat menu.", reply_markup=get_help_page(1))
+    await message.reply("👋 Selamat datang!")
+await message.reply("Gunakan /help untuk melihat menu.", reply_markup=get_help_page(1))
 
 @bot.on_message(filters.command("help"))
 async def bot_help(client, message):

@@ -84,8 +84,7 @@ async def listdelayspam_handler(client, message):
     if not active_delayspam:
         await message.reply("✅ Tidak ada delayspam aktif.")
     else:
-        await message.reply(f"📌 DelaySpam Aktif:
-{len(active_delayspam)} tugas berjalan.")
+        await message.reply(f"📌 DelaySpam Aktif:{len(active_delayspam)} tugas berjalan.")
 
 @userbot.on_message(filters.me & filters.command("stopdelayspam", prefixes="."))
 async def stopdelayspam_handler(client, message):

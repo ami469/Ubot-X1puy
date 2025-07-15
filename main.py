@@ -111,8 +111,8 @@ async def restart_handler(client, message):
 
 @userbot.on_message(filters.me & filters.command("help", prefixes="."))
 async def help_handler(client, message):
-    await message.reply(get_help_page(), reply_markup=get_buttons(), parse_mode=ParseMode.HTML)
-
+    await message.reply("📋 Commands Menu!", reply_markup=get_help_page(1))
+    
 @userbot.on_callback_query()
 async def userbot_callback(client, query):
     data = query.data

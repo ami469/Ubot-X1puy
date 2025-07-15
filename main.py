@@ -39,8 +39,7 @@ async def ping_handler(client, message):
 
 @userbot.on_message(filters.me & filters.command("alive", prefixes="."))
 async def alive_handler(client, message):
-    await message.reply(f"🤖 Bot aktif!
-🔥 Owner: <b>{OWNER_NAME}</b>", parse_mode=ParseMode.HTML)
+    await message.reply(f"🤖 Bot aktif!\n🔥 Owner: <b>{OWNER_NAME}</b>", parse_mode=ParseMode.HTML)
 
 @userbot.on_message(filters.me & filters.command("help", prefixes="."))
 async def help_handler(client, message):

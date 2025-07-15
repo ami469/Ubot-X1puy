@@ -1,4 +1,3 @@
-
 import os
 import sys
 import asyncio
@@ -20,6 +19,19 @@ bot = Client("bot", api_id=API_ID, api_hash=API_HASH, bot_token=BOT_TOKEN)
 active_delayspam = []
 delayspam_tasks = []
 
+def get_help_text():
+    return (
+        "📚 <b>Commands Menu</b>\n\n"
+        ".ping → Cek ping\n"
+        ".alive → Status bot\n"
+        ".spam jumlah teks → Spam cepat\n"
+        ".delayspam jumlah delay teks → Spam lambat\n"
+        ".listdelayspam → Lihat spam aktif\n"
+        ".stopdelayspam → Hentikan semua spam\n"
+        ".restart → Restart bot\n"
+        ".gcast teks → Kirim ke semua chat"
+    )
+
 def get_help_page(page=1):
     if page == 1:
         return InlineKeyboardMarkup([
@@ -37,11 +49,11 @@ def get_help_page(page=1):
 
 @userbot.on_message(filters.me & filters.command("ping", prefixes="."))
 async def ping_handler(client, message):
-    await message.reply("\U0001F3D3 Pong!")
+    await message.reply("🏓 Pong!")
 
 @userbot.on_message(filters.me & filters.command("alive", prefixes="."))
 async def alive_handler(client, message):
-    await message.reply(f"\U0001F916 Bot aktif!\n\U0001F451 Owner: <b>{OWNER_NAME}</b>", parse_mode=ParseMode.HTML)
+    await message.reply(f"🤖 Bot aktif!\n🔥 Owner: <b>{OWNER_NAME}</b>", parse_mode=ParseMode.HTML)
 
 @userbot.on_message(filters.me & filters.command("spam", prefixes="."))
 async def spam_handler(client, message):
@@ -57,7 +69,7 @@ async def spam_handler(client, message):
 async def delayspam_handler(client, message):
     args = message.text.split(maxsplit=3)
     if len(args) < 4:
-        return await message.reply("⚠️ Format: `.delayspam <jumlah> <delay> <pesan>`")
+        return await message.reply("⚠️ Format: .delayspam <jumlah> <delay> <pesan>")
     try:
         count = int(args[1])
         delay = float(args[2])
@@ -109,22 +121,32 @@ async def restart_handler(client, message):
     await asyncio.sleep(1)
     os.execv(sys.executable, [sys.executable] + sys.argv)
 
+@userbot.on_message(filters.me & filters.command("gcast", prefixes="."))
+async def gcast_handler(client, message):
+    if len(message.text.split(maxsplit=1)) < 2:
+        return await message.reply("⚠️ Format: .gcast pesan")
+    text = message.text.split(maxsplit=1)[1]
+    sent = 0
+    async for dialog in client.get_dialogs():
+        try:
+            await client.send_message(dialog.chat.id, text)
+            sent += 1
+        except:
+            continue
+    await message.reply(f"📢 Gcast selesai! Terkirim ke {sent} chat.")
+
 @userbot.on_message(filters.me & filters.command("help", prefixes="."))
 async def help_handler(client, message):
-    await message.reply("📋 Commands Menu!", reply_markup=get_help_page(1))
-    
+    await message.reply(get_help_text(), reply_markup=get_help_page(1), parse_mode=ParseMode.HTML)
+
 @userbot.on_callback_query()
 async def userbot_callback(client, query):
-    data = query.data
-    responses = {
-        "ping": "📡 <b>.ping</b> → Mengecek ping bot.",
-        "alive": f"⚙️ <b>.alive</b> → Status bot kamu.\n\U0001F451 Owner: {OWNER_NAME}",
-        "spam": "💣 <b>.spam jumlah teks</b> → Spam cepat.\nContoh: .spam 5 Halo",
-        "delayspam": "🐌 <b>.delayspam jumlah delay teks</b>\nContoh: .delayspam 5 1 Halo",
-        "delaycontrol": "📋 <b>.listdelayspam</b>\n🛑 <b>.stopdelayspam</b>",
-        "restart": "🔁 <b>.restart</b> → Restart ulang bot.",
-    }
-    await query.message.edit_text(responses.get(data, "❓ Tidak dikenal."), parse_mode=ParseMode.HTML)
+    if query.data == "help_page1":
+        await query.message.edit_reply_markup(get_help_page(1))
+    elif query.data == "help_page2":
+        await query.message.edit_reply_markup(get_help_page(2))
+    else:
+        await query.answer(f"Command: {query.data}", show_alert=True)
 
 @bot.on_message(filters.command("start"))
 async def start_command(client, message):
@@ -132,7 +154,7 @@ async def start_command(client, message):
 
 @bot.on_message(filters.command("help"))
 async def help_command(client, message):
-    await message.reply(get_help_page(), reply_markup=get_buttons(), parse_mode=ParseMode.HTML)
+    await message.reply(get_help_text(), reply_markup=get_help_page(1), parse_mode=ParseMode.HTML)
 
 @bot.on_callback_query()
 async def bot_callback(client, query):

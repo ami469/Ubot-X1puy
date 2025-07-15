@@ -111,7 +111,7 @@ async def restart_handler(client, message):
 
 @userbot.on_message(filters.me & filters.command("help", prefixes="."))
 async def help_handler(client, message):
-    await message.reply(get_help_text(), reply_markup=get_buttons(), parse_mode=ParseMode.HTML)
+    await message.reply(get_help_page(), reply_markup=get_buttons(), parse_mode=ParseMode.HTML)
 
 @userbot.on_callback_query()
 async def userbot_callback(client, query):
@@ -132,7 +132,7 @@ async def start_command(client, message):
 
 @bot.on_message(filters.command("help"))
 async def help_command(client, message):
-    await message.reply(get_help_text(), reply_markup=get_buttons(), parse_mode=ParseMode.HTML)
+    await message.reply(get_help_page(), reply_markup=get_buttons(), parse_mode=ParseMode.HTML)
 
 @bot.on_callback_query()
 async def bot_callback(client, query):

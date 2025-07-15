@@ -20,28 +20,20 @@ bot = Client("bot", api_id=API_ID, api_hash=API_HASH, bot_token=BOT_TOKEN)
 active_delayspam = []
 delayspam_tasks = []
 
-def get_help_text():
-    return (
-        f"\U0001F8FE <b>Modul Userbot</b>\n"
-        f"<i>\U0001F451 Owner: {OWNER_NAME}</i>\n\n"
-        "<code>.ping</code> → Cek ping\n"
-        "<code>.alive</code> → Status bot\n"
-        "<code>.spam jumlah teks</code> → Spam cepat\n"
-        "<code>.delayspam jumlah delay teks</code> → Spam lambat\n"
-        "<code>.listdelayspam</code> → Lihat spam aktif\n"
-        "<code>.stopdelayspam</code> → Hentikan semua spam\n"
-        "<code>.restart</code> → Restart bot"
-    )
-
-def get_buttons():
-    return InlineKeyboardMarkup([
-        [InlineKeyboardButton("Ping", callback_data="ping")],
-        [InlineKeyboardButton("Alive", callback_data="alive")],
-        [InlineKeyboardButton("Spam", callback_data="spam")],
-        [InlineKeyboardButton("DelaySpam", callback_data="delayspam")],
-        [InlineKeyboardButton("List/Stop Delay", callback_data="delaycontrol")],
-        [InlineKeyboardButton("Restart", callback_data="restart")]
-    ])
+def get_help_page(page=1):
+    if page == 1:
+        return InlineKeyboardMarkup([
+            [InlineKeyboardButton("Ping", callback_data="ping"),
+             InlineKeyboardButton("Spam", callback_data="spam")],
+            [InlineKeyboardButton("ListDelay", callback_data="listdelayspam"),
+             InlineKeyboardButton("➡️", callback_data="help_page2")]
+        ])
+    elif page == 2:
+        return InlineKeyboardMarkup([
+            [InlineKeyboardButton("Restart", callback_data="restart"),
+             InlineKeyboardButton("Gcast", callback_data="gcast")],
+            [InlineKeyboardButton("⬅️", callback_data="help_page1")]
+        ])
 
 @userbot.on_message(filters.me & filters.command("ping", prefixes="."))
 async def ping_handler(client, message):

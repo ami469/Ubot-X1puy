@@ -103,13 +103,19 @@ async def list_handler(client, message):
     
     text = "📋 <b>DelaySpam Aktif:</b>\n\n"
     for i, job in enumerate(active_delayspam, 1):
-        escaped_text = escape(job["text"])  # escape karakter khusus
-        text += f"{i}. Chat ID: <code>{job['chat_id']}</code>\n"
-        text += f"   Pesan: <code>{escaped_text}</code>\n"
-        text += f"   Sisa: ~{job['count']} pesan\n\n"
+        chat_id = escape(str(job["chat_id"]))
+        msg = escape(str(job["text"]))
+        count = escape(str(job["count"]))
+        text += f"{i}. Chat ID: <code>{chat_id}</code>\n"
+        text += f"   Pesan: <code>{msg}</code>\n"
+        text += f"   Sisa: ~{count} pesan\n\n"
+    
+    MAX_LEN = 4000
+    if len(text) > MAX_LEN:
+        text = text[:MAX_LEN - 50] + "\n\n... (terpotong karena terlalu panjang)"
 
     await message.reply(text, parse_mode=ParseMode.HTML)
-
+    
 @userbot.on_message(filters.me & filters.command("stopdelayspam", prefixes="."))
 async def stop_handler(client, message):
     count = 0

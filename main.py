@@ -68,6 +68,33 @@ async def spam_handler(client, message):
     for _ in range(count):
         await message.reply(text)
 
+@userbot.on_message(filters.me & filters.command("delayspamf", prefixes="."))
+async def delayspam_forward(client, message):
+    try:
+        args = message.text.split()
+        if len(args) < 5:
+            await message.reply("Gunakan format:\n`.delayspamf dari_chat_id msg_id jumlah delay`")
+            return
+
+        from_chat = int(args[1]) if args[1].lstrip("-").isdigit() else args[1]
+        msg_id = int(args[2])
+        jumlah = int(args[3])
+        delay = float(args[4])
+
+        to_chat = message.chat.id
+        await message.delete()
+
+        for _ in range(jumlah):
+            await client.forward_messages(
+                chat_id=to_chat,
+                from_chat_id=from_chat,
+                message_ids=msg_id
+            )
+            await asyncio.sleep(delay)
+
+    except Exception as e:
+        await message.reply(f"❌ Error: {e}")
+
 @userbot.on_message(filters.me & filters.command("delayspam", prefixes="."))
 async def delayspam_handler(client, message):
     args = message.text.split(maxsplit=3)

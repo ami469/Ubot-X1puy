@@ -6,6 +6,8 @@ from pyrogram import Client, filters, idle
 from pyrogram.enums import ParseMode
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from keep_alive import keep_alive
+from dotenv import load_dotenv
+load_dotenv()
 
 API_ID = int(os.environ.get("API_ID"))
 API_HASH = os.environ.get("API_HASH")

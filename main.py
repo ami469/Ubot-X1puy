@@ -5,7 +5,7 @@ from asyncio import CancelledError
 from pyrogram import Client, filters, idle
 from pyrogram.enums import ParseMode
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
-from keep_alive import keep_alive
+from panel import keep_alive
 from dotenv import load_dotenv
 load_dotenv()
 

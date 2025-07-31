@@ -5,6 +5,7 @@ from asyncio import CancelledError
 from pyrogram import Client, filters, idle
 from pyrogram.enums import ParseMode
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
+from html import escape
 from panel import keep_alive
 from dotenv import load_dotenv
 load_dotenv()
@@ -99,11 +100,14 @@ async def delayspam_handler(client, message):
 async def list_handler(client, message):
     if not active_delayspam:
         return await message.reply("✅ Tidak ada delayspam aktif.")
+    
     text = "📋 <b>DelaySpam Aktif:</b>\n\n"
     for i, job in enumerate(active_delayspam, 1):
+        escaped_text = escape(job["text"])  # escape karakter khusus
         text += f"{i}. Chat ID: <code>{job['chat_id']}</code>\n"
-        text += f"   Pesan: <code>{job['text']}</code>\n"
+        text += f"   Pesan: <code>{escaped_text}</code>\n"
         text += f"   Sisa: ~{job['count']} pesan\n\n"
+
     await message.reply(text, parse_mode=ParseMode.HTML)
 
 @userbot.on_message(filters.me & filters.command("stopdelayspam", prefixes="."))

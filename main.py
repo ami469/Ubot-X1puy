@@ -74,11 +74,11 @@ async def spam_handler(client, message):
         await message.reply(text)
 
 @userbot.on_message(filters.me & filters.command("delayspamf", prefixes="."))
-async def delayspam_forward(client, message):
+async def delayspamf_handler(client, message):
     try:
         args = message.text.split()
         if len(args) < 5:
-            await message.reply("Gunakan format:\n`.delayspamf dari_chat_id msg_id jumlah delay`")
+            await message.reply("⚠️ Format: .delayspamf <from_chat_id> <msg_id> <jumlah> <delay>")
             return
 
         from_chat = int(args[1]) if args[1].lstrip("-").isdigit() else args[1]
@@ -89,13 +89,31 @@ async def delayspam_forward(client, message):
         to_chat = message.chat.id
         await message.delete()
 
-        for _ in range(jumlah):
-            await client.forward_messages(
-                chat_id=to_chat,
-                from_chat_id=from_chat,
-                message_ids=msg_id
-            )
-            await asyncio.sleep(delay)
+        job = {
+            "chat_id": to_chat,
+            "from_chat": from_chat,
+            "msg_id": msg_id,
+            "count": jumlah,
+        }
+        active_delayspamf.append(job)
+
+        async def forward_job():
+            try:
+                for _ in range(jumlah):
+                    await client.forward_messages(
+                        chat_id=to_chat,
+                        from_chat_id=from_chat,
+                        message_ids=msg_id
+                    )
+                    await asyncio.sleep(delay)
+            except CancelledError:
+                await client.send_message(to_chat, "⛔ Delay forward dihentikan.")
+            finally:
+                if job in active_delayspamf:
+                    active_delayspamf.remove(job)
+
+        task = asyncio.create_task(forward_job())
+        delayspamf_tasks.append(task)
 
     except Exception as e:
         await message.reply(f"❌ Error: {e}")

@@ -90,10 +90,10 @@ async def delayspamf_handler(client, message):
         await message.delete()
 
         job = {
-            "chat_id": to_chat,
             "from_chat": from_chat,
             "msg_id": msg_id,
-            "count": jumlah,
+            "jumlah": jumlah,
+            "to_chat": to_chat
         }
         active_delayspamf.append(job)
 

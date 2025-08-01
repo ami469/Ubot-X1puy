@@ -21,6 +21,8 @@ bot = Client("bot", api_id=API_ID, api_hash=API_HASH, bot_token=BOT_TOKEN)
 
 active_delayspam = []
 delayspam_tasks = []
+active_delayspamf = []
+delayspamf_tasks = []
 
 def get_help_text():
     return (
@@ -31,6 +33,9 @@ def get_help_text():
         ".delayspam jumlah delay teks → Spam lambat\n"
         ".listdelayspam → Lihat spam aktif\n"
         ".stopdelayspam → Hentikan semua spam\n"
+        ".delayspamf dari_chat msg_id jumlah delay → Forward spam\n"
+        ".listdelayspamf → Lihat spam forward aktif\n"
+        ".stopdelayspamf → Hentikan spam forward\n"
         ".restart → Restart bot\n"
         ".gcast teks → Kirim ke semua chat"
     )
@@ -94,6 +99,33 @@ async def delayspam_forward(client, message):
 
     except Exception as e:
         await message.reply(f"❌ Error: {e}")
+
+@userbot.on_message(filters.me & filters.command("listdelayspamf", prefixes="."))
+async def list_delayspamf_handler(client, message):
+    if not active_delayspamf:
+        return await message.reply("✅ Tidak ada delayspam forward aktif.")
+
+    text = "📋 <b>DelaySpam Forward Aktif:</b>\n\n"
+    for i, job in enumerate(active_delayspamf, 1):
+        text += (
+            f"{i}. Dari: <code>{job['from_chat']}</code>\n"
+            f"   Msg ID: <code>{job['msg_id']}</code>\n"
+            f"   Ke: <code>{job['to_chat']}</code>\n"
+            f"   Jumlah: <b>{job['jumlah']}</b>\n\n"
+        )
+
+    await message.reply(text, parse_mode=ParseMode.HTML)
+
+@userbot.on_message(filters.me & filters.command("stopdelayspamf", prefixes="."))
+async def stopf_handler(client, message):
+    count = 0
+    for task in delayspamf_tasks:
+        if not task.done():
+            task.cancel()
+            count += 1
+    active_delayspamf.clear()
+    delayspamf_tasks.clear()
+    await message.reply(f"🛑 Berhasil hentikan {count} forward spam.")
 
 @userbot.on_message(filters.me & filters.command("delayspam", prefixes="."))
 async def delayspam_handler(client, message):
